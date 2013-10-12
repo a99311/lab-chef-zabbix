@@ -1,3 +1,6 @@
+default['zabbix']['version']['major'] = "2.0"
+default['zabbix']['version']['minor'] = "8"
+default['zabbix']['version'] = "#{node['zabbix']['version']['major']}.#{node['zabbix']['version']['minor']}"
 default['zabbix']['user'] = "zabbix"
 default['zabbix']['group'] = "zabbix"
 default['zabbix']['repo_url'] = "http://repo.zabbix.com/zabbix/2.0/rhel/6/x86_64/zabbix-release-2.0-1.el6.noarch.rpm"

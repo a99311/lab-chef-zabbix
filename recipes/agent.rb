@@ -9,7 +9,11 @@
 
 include_recipe 'zabbix'
 
-%w(zabbix-agent zabbix-get zabbix-sender).each do |pkg|
+%w(
+  zabbix-agent
+  zabbix-get
+  zabbix-sender
+).each do |pkg|
   package pkg
 end
 
