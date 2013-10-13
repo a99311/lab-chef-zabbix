@@ -7,16 +7,17 @@
 # All rights reserved - Do Not Redistribute
 #
 
-#package "zabbix" dodddd
-#  action :install
-#  source node['zabbix']['
-
-case node['platform']
+case node["platform"]
 when "centos", "redhat", "amazon"
-  yum_repository "zabbix-stable" do
-    url node['zabbix']['repo_url']
-    enabled 1
-    action :add
+  remote_file "#{Chef::Config[:file_cache_path]}/#{node['zabbix']['repo']}" do
+    source node['zabbix']['repo_url']
+    action :create
+    notifies :install, "rpm_package[zabbix-release]", :immediately
+  end
+
+  rpm_package "zabbix-release" do
+    action :nothing
+    source "#{Chef::Config[:file_cache_path]}/#{node['zabbix']['repo']}"
   end
 end
 

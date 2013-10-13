@@ -11,11 +11,18 @@ include_recipe 'zabbix'
 
 %w(
   zabbix
-  zabbix-server
+  httpd24
+  httpd24-devel
+  mod24_ssl
+  php54
+  php54-devel
+  php54-mysql
+  mysql51-libs
+  zabbix-web
   zabbix-web-mysql
   zabbix-web-japanese
-  zabbix-web
   zabbix-server-mysql
+  zabbix-server
 ).each do |pkg|
   package pkg
 end
@@ -35,13 +42,15 @@ template '/etc/logrotate.d/zabbix-server' do
 end
 
 bash 'database schema setup' do
+  user "root"
+  group "root"
   cwd "/usr/share/doc/zabbix-server-mysql-#{node['zabbix']['version']}/create"
   code <<-EOC
-    mysql -u#{node['zabbix']['db']['user']} -p#{node['zabbix']['db']['password']} #{node['zabbix']['db']['name']} < schema.sql
-    mysql -u#{node['zabbix']['db']['user']} -p#{node['zabbix']['db']['password']} #{node['zabbix']['db']['name']} < images.sql
-    mysql -u#{node['zabbix']['db']['user']} -p#{node['zabbix']['db']['password']} #{node['zabbix']['db']['name']} < data.sql
+    mysql -u #{node['zabbix']['server']['db']['user']} -p#{node['zabbix']['server']['db']['password']} #{node['zabbix']['server']['db']['name']}  < schema.sql 
+    mysql -u #{node['zabbix']['server']['db']['user']} -p#{node['zabbix']['server']['db']['password']} #{node['zabbix']['server']['db']['name']} < images.sql
+    mysql -u #{node['zabbix']['server']['db']['user']} -p#{node['zabbix']['server']['db']['password']} #{node['zabbix']['server']['db']['name']} < data.sql
   EOC
-  not_if "mysql -u#{node['zabbix']['db']['user']} -p#{node['zabbix']['db']['password']} #{node['zabbix']['db']['name']} -e 'select * from item_discovery where itemdiscoveryid = 1;' | grep itemdiscoveryid"
+  not_if "mysql -u #{node['zabbix']['server']['db']['user']} -p#{node['zabbix']['server']['db']['password']} #{node['zabbix']['server']['db']['name']} -e 'select * from item_discovery where itemdiscoveryid = 1;' | grep itemdiscoveryid"
 end
 
 service 'zabbix-server' do
