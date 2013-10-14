@@ -124,7 +124,7 @@ Server=<%= node['zabbix']['server']['ip'] %>
 # Default:
 # ServerActive=
 
-ServerActive=127.0.0.1
+ServerActive=<%= node['zabbix']['server']['ip'] %>
 
 ### Option: Hostname
 #	Unique, case sensitive hostname.

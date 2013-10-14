@@ -21,6 +21,7 @@ template '/etc/zabbix/zabbix_agentd.conf' do
   owner 'root'
   group 'root'
   mode 00644
+  notifies :restart, 'service[zabbix-agent]'
 end
 
 template '/etc/logrotate.d/zabbix-agent' do
@@ -28,7 +29,6 @@ template '/etc/logrotate.d/zabbix-agent' do
   group 'root'
   mode 00644
   source 'zabbix-agent_logrotate.erb'
-  notifies :restart, 'service[zabbix-agent]'
 end
 
 directory '/etc/zabbix/externalscripts' do
